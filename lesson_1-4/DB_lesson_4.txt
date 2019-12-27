@@ -1,0 +1,321 @@
+Солодянников Сергей. Курс Базы данных. 
+Практическое задание 4. CRUD - операции.
+
+1. Повторить все действия по доработке БД vk.
+
+Таблицы like и like_subject_types уже создал и заполнил в прошлом задании.
+Теперь создаю таблицу posts.
+
+mysql> CREATE TABLE posts (
+    -> id SERIAL PRIMARY KEY,
+    -> user_id INT(10) UNSIGNED NOT NULL,
+    -> body TEXT NOT NULL,
+    -> created_at DATETIME DEFAULT NOW()
+    -> );
+Query OK, 0 rows affected, 1 warning (0.14 sec)
+
+mysql> DESC posts;
++------------+---------------------+------+-----+-------------------+-------------------+
+| Field      | Type                | Null | Key | Default           | Extra             |
++------------+---------------------+------+-----+-------------------+-------------------+
+| id         | bigint(20) unsigned | NO   | PRI | NULL              | auto_increment    |
+| user_id    | int(10) unsigned    | NO   |     | NULL              |                   |
+| body       | text                | NO   |     | NULL              |                   |
+| created_at | datetime            | YES  |     | CURRENT_TIMESTAMP | DEFAULT_GENERATED |
++------------+---------------------+------+-----+-------------------+-------------------+
+4 rows in set (0.01 sec)
+
+2. Заполнить новые таблицы.
+
+Сгенерировал данные с помощью сайта filldb.info.
+Добавил сгенерированный файл данных posts_data.sql в таблицу posts с помощью командной строки(Windows):
+
+C:\Users\Сергей>mysql vk < posts_data.sql
+
+Проверяем, что данные добавились в таблицу, выводим ее первые 5 строк в вертикальном режиме:
+
+mysql> SELECT * FROM posts LIMIT 5\G;
+
+*************************** 1. row ***************************
+        id: 1
+   user_id: 38
+      body: Accusamus iusto ut eveniet quam quod. Consequatur quam est dicta. Consequatur vitae aliquid omnis commodi labore molestias sint. Facere aut illum similique alias nesciunt. Quos temporibus autem tempore.
+created_at: 1971-07-03 00:11:04
+*************************** 2. row ***************************
+        id: 2
+   user_id: 83
+      body: Numquam ratione rerum aut ea ut unde. Reiciendis ex qui sint quod. Mollitia voluptates eligendi aliquid. Non quis voluptatem exercitationem.
+created_at: 1999-03-08 05:33:24
+*************************** 3. row ***************************
+        id: 3
+   user_id: 55
+      body: Aliquid accusamus aut similique fugiat in mollitia. Ut molestias aut nulla quo molestiae aut ex autem. Sint eveniet magnam veritatis culpa et nihil. Qui et molestiae excepturi quibusdam.
+created_at: 2017-12-18 08:16:49
+*************************** 4. row ***************************
+        id: 4
+   user_id: 66
+      body: Voluptate blanditiis ad blanditiis inventore reiciendis quia. Similique qui voluptas iure perferendis velit facilis ducimus. Dicta dolores iure aut ut autem sed dignissimos.
+created_at: 1988-12-24 00:13:34
+*************************** 5. row ***************************
+        id: 5
+   user_id: 23
+      body: Dolores molestias qui laboriosam. Autem eos quod explicabo tempore. Ab enim et autem. Dolor ut ut ut. Sit eaque suscipit accusantium accusamus vitae vero.
+created_at: 1994-04-22 00:26:37
+5 rows in set (0.00 sec)
+ 
+
+3. Повторить все действия CRUD.
+
+Повторил команду INSERT:
+
+mysql> INSERT INTO like_subject_types VALUES (1, 'media');
+Query OK, 1 row affected (0.02 sec)
+
+mysql> SELECT * FROM like_subject_types;
++----+-------+
+| id | name  |
++----+-------+
+|  1 | media |
++----+-------+
+1 row in set (0.00 sec)
+
+mysql> INSERT INTO like_subject_types VALUES (DEFAULT, 'newsline');
+Query OK, 1 row affected (0.01 sec)
+
+mysql> SELECT * FROM like_subject_types;
++----+----------+
+| id | name     |
++----+----------+
+|  1 | media    |
+|  2 | newsline |
++----+----------+
+2 rows in set (0.00 sec)
+
+mysql> INSERT INTO like_subject_types VALUES (DEFAULT, 'user'), (DEFAULT, 'posts');
+Query OK, 2 rows affected (0.01 sec)
+Records: 2  Duplicates: 0  Warnings: 0
+
+mysql> SELECT * FROM like_subject_types;
++----+----------+
+| id | name     |
++----+----------+
+|  1 | media    |
+|  2 | newsline |
+|  4 | posts    |
+|  3 | user     |
++----+----------+
+4 rows in set (0.00 sec)
+
+mysql> INSERT INTO like_subject_types SET name = 'communities';
+Query OK, 1 row affected (0.01 sec)
+
+mysql> SELECT * FROM like_subject_types;
++----+-------------+
+| id | name        |
++----+-------------+
+|  6 | communities |
+|  1 | media       |
+|  2 | newsline    |
+|  4 | posts       |
+|  3 | user        |
++----+-------------+
+5 rows in set (0.00 sec)
+
+
+Повторил команду REPLACE:
+
+mysql> REPLACE INTO like_subject_types VALUES (DEFAULT, 'newsline');
+Query OK, 2 rows affected (0.01 sec)
+
+mysql> SELECT * FROM like_subject_types;
++----+-------------+
+| id | name        |
++----+-------------+
+|  6 | communities |
+|  1 | media       |
+|  7 | newsline    |
+|  4 | posts       |
+|  3 | user        |
++----+-------------+
+5 rows in set (0.00 sec)
+
+
+Повторил команду SELECT:
+
+mysql> SELECT DISTINCT name FROM like_subject_types;
++-------------+
+| name        |
++-------------+
+| communities |
+| media       |
+| newsline    |
+| posts       |
+| user        |
++-------------+
+5 rows in set (0.00 sec)
+
+mysql> SELECT * FROM like_subject_types LIMIT 1;
++----+-------------+
+| id | name        |
++----+-------------+
+|  6 | communities |
++----+-------------+
+1 row in set (0.00 sec)
+
+mysql> SELECT * FROM like_subject_types LIMIT 2;
++----+-------------+
+| id | name        |
++----+-------------+
+|  6 | communities |
+|  1 | media       |
++----+-------------+
+
+
+Повторил команду UPDATE:
+
+mysql> UPDATE like_subject_types SET id = 10 WHERE name = 'newsline';
+Query OK, 1 row affected (0.01 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> SELECT * FROM like_subject_types;
++----+-------------+
+| id | name        |
++----+-------------+
+|  6 | communities |
+|  1 | media       |
+| 10 | newsline    |
+|  4 | posts       |
+|  3 | user        |
++----+-------------+
+5 rows in set (0.00 sec)
+
+mysql> UPDATE like_subject_types SET id = id*20;
+Query OK, 5 rows affected (0.01 sec)
+Rows matched: 5  Changed: 5  Warnings: 0
+
+mysql> SELECT * FROM like_subject_types;
++-----+-------------+
+| id  | name        |
++-----+-------------+
+| 120 | communities |
+|  20 | media       |
+| 200 | newsline    |
+|  80 | posts       |
+|  60 | user        |
++-----+-------------+
+5 rows in set (0.00 sec)
+
+mysql> UPDATE like_subject_types SET name = 'group' WHERE name = 'communities';
+Query OK, 1 row affected (0.01 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> SELECT * FROM like_subject_types;
++-----+----------+
+| id  | name     |
++-----+----------+
+| 120 | group    |
+|  20 | media    |
+| 200 | newsline |
+|  80 | posts    |
+|  60 | user     |
++-----+----------+
+5 rows in set (0.00 sec)
+
+mysql> REPLACE INTO like_subject_types VALUES (DEFAULT, 'newsline2');
+Query OK, 1 row affected (0.01 sec)
+
+mysql> SELECT * FROM like_subject_types;
++-----+-----------+
+| id  | name      |
++-----+-----------+
+| 120 | group     |
+|  20 | media     |
+| 200 | newsline  |
+| 201 | newsline2 |
+|  80 | posts     |
+|  60 | user      |
++-----+-----------+
+6 rows in set (0.00 sec)
+
+
+Повторил команду DELETE:
+
+mysql> DELETE FROM like_subject_types WHERE name = 'newsline2';
+Query OK, 1 row affected (0.01 sec)
+
+mysql> SELECT * FROM like_subject_types;
++-----+----------+
+| id  | name     |
++-----+----------+
+| 120 | group    |
+|  20 | media    |
+| 200 | newsline |
+|  80 | posts    |
+|  60 | user     |
++-----+----------+
+5 rows in set (0.00 sec)
+
+mysql> DELETE FROM like_subject_types LIMIT 2;
+Query OK, 2 rows affected (0.01 sec)
+
+mysql> SELECT * FROM like_subject_types;
++-----+----------+
+| id  | name     |
++-----+----------+
+| 120 | group    |
+| 200 | newsline |
+|  80 | posts    |
++-----+----------+
+3 rows in set (0.00 sec)
+
+
+Повторил команду TRUNCATE:
+
+mysql> TRUNCATE like_subject_types;
+Query OK, 0 rows affected (0.18 sec)
+
+mysql> SELECT * FROM like_subject_types;
+Empty set (0.00 sec)
+
+
+4. Подобрать сервис-образец для курсовой работы.
+
+Сервис: Социальная сеть - Планировщик личных задач "Лайфменеджер".
+Приложение помогает планировать задачи и отмечать их осуществление, делать записи, общаться, 
+совместно работать над проектами, организовывать мероприятия, обучаться и получать предложения по интересам, 
+объявлять свои компетениции, предлагать и откликаться на вакансии.
+
+Близкий по функционалу(но далеко не полностью) сервис - Smartprogress - https://smartprogress.do/?lang=ru
+
+Список таблиц для базы данных.
+
+Таблицы основных сущностей:
+
+users - пользователи
+profile - профили
+friendship - друзья
+posts - записи пользователей
+categories - категории записей
+key_words - ключевые слова в записях пользователей
+media - медиа в записях и сообщениях
+media_types - типы медиа
+messages - личные сообщения
+likes - лайки
+like_types - типы лайков
+comments - комментарии
+alerts - системные оповещения
+projects - проекты, группы, сообщества, страницы компаний
+roles - роли участников в проекте, компании
+reviews - оценочные отзывы о компаниях, мероприятиях, проектах
+products - продукты, производимые проектами, компаниями
+interests - интересы пользователей
+skills - компетенции пользователей
+vacancies - вакансии от компаний
+
+Таблицы связей внутри сущностей:
+
+post_bonds - связи между записями пользователей в виде графа
+category_bonds - связи между категориями записей в виде графа
+interest_bonds - связи между интересами пользователей в виде графа
+skill_bonds - связи между компетенциями пользователей в виде графа
+word_bonds - связи между ключевыми словами в записях пользователей в виде графа
