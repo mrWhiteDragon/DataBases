@@ -1,0 +1,134 @@
+Солодянников Сергей. Курс Базы данных. 
+Практическое задание 2. Управление БД. Язык запросов SQL.
+
+1)Установите СУБД MySQL. 
+Создайте в домашней директории файл .my.cnf, 
+задав в нем логин и пароль, который указывался при установке.
+
+Установил СУБД MySQL(Windows).
+
+Добавил папку bin с файлом mysql.exe в переменную PATH.
+
+Создал файл .my.cnf
+Содержание файла:
+
+[mysql]
+user=root
+password=мой пароль
+
+
+2)Создайте базу данных example, 
+разместите в ней таблицу users, 
+состоящую из двух столбцов, числового id и строкового name.
+
+Создал базу данных example:
+
+mysql> CREATE DATABASE example;
+Query OK, 1 row affected (0.09 sec)
+
+mysql> SHOW DATABASES;
++--------------------+
+| Database           |
++--------------------+
+| example            |
+| information_schema |
+| mysql              |
+| performance_schema |
+| sys                |
++--------------------+
+5 rows in set (0.00 sec)
+
+Разместил в ней таблицу users, 
+состоящую из двух столбцов, числового id и строкового name:
+
+mysql> USE example;
+Database changed
+mysql> CREATE TABLE users (
+    -> id SERIAL PRIMARY KEY,
+    -> name VARCHAR(100) NOT NULL
+    -> );
+Query OK, 0 rows affected (0.27 sec)
+
+mysql> SHOW TABLES;
++-------------------+
+| Tables_in_example |
++-------------------+
+| users             |
++-------------------+
+1 row in set (0.01 sec)
+
+mysql> DESCRIBE users;
++-------+---------------------+------+-----+---------+----------------+
+| Field | Type                | Null | Key | Default | Extra          |
++-------+---------------------+------+-----+---------+----------------+
+| id    | bigint(20) unsigned | NO   | PRI | NULL    | auto_increment |
+| name  | varchar(100)        | NO   |     | NULL    |                |
++-------+---------------------+------+-----+---------+----------------+
+2 rows in set (0.01 sec)
+
+3)Создайте дамп базы данных example из предыдущего задания, 
+разверните содержимое дампа в новую базу данных sample.
+
+
+Создал дамп базы данных example:
+
+C:\Users\Сергей>mysqldump example > example.sql
+
+C:\Users\Сергей>dir
+ Том в устройстве C имеет метку Windows
+ Серийный номер тома: 2E42-25EE
+
+ Содержимое папки C:\Users\Сергей
+
+16.08.2019  16:04    <DIR>          .
+16.08.2019  16:04    <DIR>          ..
+16.08.2019  13:02    <DIR>          .eclipse
+22.07.2019  00:09                54 .gitconfig
+16.08.2019  15:20                41 .my.сnf
+22.07.2019  00:09    <DIR>          .ssh
+21.07.2019  08:17    <DIR>          3D Objects
+21.07.2019  08:17    <DIR>          Contacts
+16.08.2019  15:20    <DIR>          Desktop
+21.07.2019  08:17    <DIR>          Documents
+16.08.2019  13:21    <DIR>          Downloads
+16.08.2019  16:06             1 942 example.sql
+21.07.2019  08:17    <DIR>          Favorites
+21.07.2019  08:17    <DIR>          Links
+21.07.2019  08:17    <DIR>          Music
+10.08.2019  21:37    <DIR>          OneDrive
+21.07.2019  08:19    <DIR>          Pictures
+04.08.2019  03:36    <DIR>          python
+21.07.2019  08:17    <DIR>          Saved Games
+21.07.2019  08:19    <DIR>          Searches
+21.07.2019  08:17    <DIR>          Videos
+               3 файлов          2 037 байт
+              18 папок   7 462 420 480 байт свободно
+
+Развернул содержимое дампа в новую базу данных sample:
+
+mysql> CREATE DATABASE sample;
+Query OK, 1 row affected (0.02 sec)
+
+mysql> \q
+Bye
+
+C:\Users\Сергей>mysql sample < example.sql
+
+mysql> USE sample;
+Database changed
+mysql> SHOW TABLES;
++------------------+
+| Tables_in_sample |
++------------------+
+| users            |
++------------------+
+1 row in set (0.01 sec)
+
+mysql> DESCRIBE users;
++-------+---------------------+------+-----+---------+----------------+
+| Field | Type                | Null | Key | Default | Extra          |
++-------+---------------------+------+-----+---------+----------------+
+| id    | bigint(20) unsigned | NO   | PRI | NULL    | auto_increment |
+| name  | varchar(100)        | NO   |     | NULL    |                |
++-------+---------------------+------+-----+---------+----------------+
+2 rows in set (0.00 sec)
